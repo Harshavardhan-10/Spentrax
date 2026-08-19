@@ -42,15 +42,9 @@ services:
       - key: AI_BASE_URL
         value: https://api.openai.com/v1
       - key: FRONTEND_URL
-        fromService:
-          name: spentrax-web
-          type: web
-          property: url
+        value: https://spentrax-web.onrender.com
       - key: CORS_ORIGINS
-        fromService:
-          name: spentrax-web
-          type: web
-          property: url
+        value: https://spentrax-web.onrender.com
 
   - type: web
     name: spentrax-web
@@ -60,7 +54,4 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: spentrax-api
-          type: web
-          property: url
+        value: https://spentrax-api.onrender.com
