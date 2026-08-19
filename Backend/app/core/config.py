@@ -51,6 +51,16 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def default_if_empty(cls, value):
+        # Hosts (e.g. Render) may inject DATABASE_URL as an empty string when it
+        # was left unset; fall back to local SQLite instead of crashing
+        # SQLAlchemy with an empty URL.
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return "sqlite:///./expense.db"
+        return value
+
 
 @lru_cache
 def get_settings() -> Settings:

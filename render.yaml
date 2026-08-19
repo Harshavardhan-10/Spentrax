@@ -23,10 +23,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.7
-      # Paste your Neon connection string here after deploy (qpurl with sslmode=require).
-      # Note: this remains a free web service — it spins down after 15 min idle.
-      - key: DATABASE_URL
-        value: ""
+      # Add DATABASE_URL manually in Render dashboard -> spentrax-api ->
+      # Environment -> paste your Neon connection string (see DEPLOY.md).
+      # If left unset the app falls back to SQLite (data resets on redeploy).
       - key: SECRET_KEY
         generateValue: true
       - key: ALGORITHM
