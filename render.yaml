@@ -1,0 +1,58 @@
+# Render Blueprint — deploys the Smart Expense Manager backend, its database,
+# and the static frontend. Create a new Blueprint in the Render dashboard and
+# point it at this repo (Smart_Expense_Manager as the repo root).
+#
+# After first deploy, frontend is served from https://spentrax-web.onrender.com
+# and the API from https://spentrax-api.onrender.com (adjust CORS_ORIGINS /
+# VITE_API_URL below if you change service names).
+
+databases:
+  - name: spentrax-db
+    plan: free
+    databaseName: spentrax
+
+services:
+  - type: web
+    name: spentrax-api
+    runtime: python
+    rootDir: Backend
+    plan: free
+    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt
+    startCommand: alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: spentrax-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+      - key: AI_PROVIDER
+        value: rule_based
+      - key: AI_API_KEY
+        value: ""
+      - key: AI_MODEL
+        value: ""
+      - key: AI_BASE_URL
+        value: https://api.openai.com/v1
+      - key: FRONTEND_URL
+        value: https://spentrax-web.onrender.com
+      - key: CORS_ORIGINS
+        value: https://spentrax-web.onrender.com
+
+  - type: web
+    name: spentrax-web
+    runtime: static
+    rootDir: Frontend
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://spentrax-api.onrender.com
