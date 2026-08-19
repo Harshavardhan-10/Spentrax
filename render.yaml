@@ -50,7 +50,6 @@ services:
     name: spentrax-web
     runtime: static
     rootDir: Frontend
-    plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
