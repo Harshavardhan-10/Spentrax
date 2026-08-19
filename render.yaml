@@ -1,15 +1,15 @@
-# Render Blueprint — deploys the Smart Expense Manager backend, its database,
-# and the static frontend. Create a new Blueprint in the Render dashboard and
-# point it at this repo (Smart_Expense_Manager as the repo root).
+# Render Blueprint — deploys the Smart Expense Manager backend (free web
+# service) and the static frontend (free forever, always on).
 #
-# After first deploy, frontend is served from https://spentrax-web.onrender.com
-# and the API from https://spentrax-api.onrender.com (adjust CORS_ORIGINS /
-# VITE_API_URL below if you change service names).
-
-databases:
-  - name: spentrax-db
-    plan: free
-    databaseName: spentrax
+# LIFETIME-FREE DB: Render's free Postgres expires after 30 days, so the
+# database lives on Neon (https://neon.tech — free tier, no expiration).
+# After creating a Neon project, paste its connection string into the
+# spentrax-api > Environment → DATABASE_URL once deployed (see DEPLOY.md).
+#
+# URLs after first deploy:
+#   Frontend: https://spentrax-web.onrender.com
+#   API:      https://spentrax-api.onrender.com
+# (adjust CORS_ORIGINS / VITE_API_URL if you rename services)
 
 services:
   - type: web
@@ -23,10 +23,10 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.7
+      # Paste your Neon connection string here after deploy (qpurl with sslmode=require).
+      # Note: this remains a free web service — it spins down after 15 min idle.
       - key: DATABASE_URL
-        fromDatabase:
-          name: spentrax-db
-          property: connectionString
+        value: ""
       - key: SECRET_KEY
         generateValue: true
       - key: ALGORITHM
