@@ -20,7 +20,8 @@ services:
     healthCheckPath: /health
     buildCommand: pip install -r requirements.txt
     # seed_demo_data.py --if-missing creates the demo@example.com account only
-    # when it does not exist yet (so a cold start never wipes existing data).
+    # when it is absent or empty (so a cold start never wipes existing data,
+    # but an empty demo account always gets filled).
     startCommand: alembic upgrade head && python seed_demo_data.py --if-missing && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION

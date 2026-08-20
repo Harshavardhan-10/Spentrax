@@ -55,8 +55,8 @@ demo@example.com / DemoPass123!
 
 The demo account is created automatically at deploy time
 (`seed_demo_data.py --if-missing` runs before the server starts). It is only
-seeded when the account is missing, so your own accounts and edits are never
-overwritten on a cold start. To force a fresh demo dataset, run:
+seeded when the account is missing or has no expenses, so your own accounts and
+edits are never overwritten on a cold start. To force a fresh demo dataset, run:
 
 ```bash
 cd Backend

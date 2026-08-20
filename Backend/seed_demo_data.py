@@ -52,7 +52,7 @@ def main():
     parser.add_argument(
         "--if-missing",
         action="store_true",
-        help="Only seed when the demo user does not exist yet.",
+        help="Only seed when the demo user does not exist or has no expenses.",
     )
     args = parser.parse_args()
 
@@ -67,8 +67,19 @@ def main():
 
         user = db.scalar(select(User).where(User.email == EMAIL))
         if args.if_missing and user is not None:
-            print(f"Demo user already exists; skipping (--if-missing).")
-            return
+            expense_count = db.scalar(
+                select(func.count(Expense.id)).where(Expense.user_id == user.id)
+            )
+            if expense_count:
+                print(
+                    f"Demo user already exists with {expense_count} expenses; "
+                    f"skipping (--if-missing)."
+                )
+                return
+            print(
+                "Demo user exists but has no expenses; seeding demo data... "
+                "(use without --if-missing to force a full reset)"
+            )
 
         if user is None:
             user = User(
