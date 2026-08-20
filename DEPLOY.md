@@ -46,7 +46,28 @@ gh repo create <your-name>/smart-expense-manager --private --source=. --push
 
 ## 4. Done
 
-Open https://spentrax-web.onrender.com -> register a new account and use the app.
+Open https://spentrax-web.onrender.com and log in with the pre-seeded demo
+account:
+
+```
+demo@example.com / DemoPass123!
+```
+
+The demo account is created automatically at deploy time
+(`seed_demo_data.py --if-missing` runs before the server starts). It is only
+seeded when the account is missing, so your own accounts and edits are never
+overwritten on a cold start. To force a fresh demo dataset, run:
+
+```bash
+cd Backend
+python seed_demo_data.py        # resets the demo account only
+```
+
+> **Why your data disappeared before:** the API used SQLite on Render's
+> ephemeral disk, which is wiped on every restart. Setting `DATABASE_URL` to a
+> Neon Postgres connection string makes all data (demo + your accounts) persist.
+> The seed script now uses the same `DATABASE_URL` as the server, so it works on
+> both SQLite (local) and Postgres (Render/Neon).
 
 ## Optional: enable real AI insights
 
